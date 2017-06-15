@@ -17,22 +17,17 @@ user_path = "./data/JData_User.csv"
 #内存不足，按chunk读取
 def get_actions_path(path,start_date, end_date): 
     print "%s %s %s %s"%(path,start_date,end_date,time.strftime('%H:%M:%S',time.localtime(time.time())))
-    dump_path = './cache/all_action_%s_%s_%s.pkl' % (path[20:26],start_date, end_date) 
+ 
     action_chunks = pd.read_csv(path,chunksize=1000000,dtype={'user_id':int,'sku_id':int,'type':int}) 
-    actions=pd.read_csv(path,nrows=1,dtype={'user_id':int,'sku_id':int,'type':int}) 
-    flag=0
+    actions=[]
+   
     for chunk in action_chunks: 
         if(chunk.iloc[-1]['time']<start_date): 
             continue 
         if(chunk.iloc[0]['time']>end_date): 
-            return actions 
-        actions=actions.append(chunk[(chunk['time']>=start_date)&(chunk['time']<=end_date)]) 
-        if(flag==0):
-            flag=1
-            actions=actions.iloc[1:]
-                          
-    pickle.dump(actions, open(dump_path, 'w'))   
-    return actions
+            return pd.concat(actions)   
+        actions.append(chunk[(chunk['time']>=start_date)&(chunk['time']<=end_date)]) 
+    return pd.concat(actions) 
 
 
 def get_actions(start_date, end_date): 
