@@ -14,6 +14,7 @@ product_path = "./data/JData_Product.csv"
 user_path = "./data/JData_User.csv"
 
 
+#内存不足，按chunk读取
 def get_actions_path(path,start_date, end_date): 
     print "%s %s %s %s"%(path,start_date,end_date,time.strftime('%H:%M:%S',time.localtime(time.time())))
     dump_path = './cache/all_action_%s_%s_%s.pkl' % (path[20:26],start_date, end_date) 
@@ -145,3 +146,5 @@ del actions
 gc.collect()
 
 get_actions_user(action_1_path,user)
+get_actions_user(action_2_path,user)
+get_actions_user(action_3_path,user)
